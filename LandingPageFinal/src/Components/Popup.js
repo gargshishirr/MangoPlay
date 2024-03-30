@@ -1,14 +1,33 @@
-import React from "react";
+// import React from "react";
 
-const Popup = ({ onClose, children }) => {
+// const Popup = ({ onClose, children }) => {
+//   return (
+//     <div className="popup">
+//       <div className="popup-content">
+//         <button className="close-btn" onClick={onClose}>
+//           &times;
+//         </button>
+//         {children}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Popup;
+
+import React from "react";
+// import './App.css'; // Assuming your CSS is in a file named Popup.css
+
+const Popup = ({ title, onClose, children }) => {
   return (
     <div className="popup">
-      <div className="popup-content">
-        <button className="close-btn" onClick={onClose}>
+      <div className="popup-header">
+        <h3 className="popup-title">{title}</h3>
+        <button className="popup-close" onClick={onClose}>
           &times;
         </button>
-        {children}
       </div>
+      <div className="popup-content">{children}</div>
     </div>
   );
 };
