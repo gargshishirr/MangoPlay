@@ -40,6 +40,28 @@
   padding: 20px; /* Adjust padding for content */
   position: relative;
 }
+.signUpModal-header {
+  display: flex; /* Allow for a close button or title */
+  justify-content: space-between; /* Align items horizontally */
+  align-items: center; /* Align items vertically */
+  padding-bottom: 10px; /* Spacing for content below header */
+  border-bottom: 1px solid #ddd; /* Optional divider line */
+}
+
+.signUpModal-title {
+  /* Replace with your desired font size and weight */
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.signUpModal-close {
+  cursor: pointer; /* Indicate clickable close button */
+}
+
+.signUpModal-content {
+  padding: 20px; /* Adjust padding for content */
+  position: relative;
+}
 
 
 .close-btn {
@@ -97,11 +119,25 @@ nav {
   font-weight: 600;
   transition: 0.2s;
 }
+.demo-button {
+  padding: 0.9rem 1.75rem;
+  background-color: #fe9e0d;
+  outline: none;
+  border: none;
+  border-radius: 5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
 .navbar-cart-icon {
   font-size: 1.15rem;
 }
 .primary-button:hover {
   background-color: rgb(234, 234, 234);
+}
+.demo-button:hover {
+  background-color: white;
 }
 .navbar-menu-container svg {
   font-size: 1.5rem;
@@ -370,6 +406,9 @@ nav {
   }
   .home-bannerImage-container {
     max-width: 600px;
+  }
+  .demo-button {
+    font-size: 1rem;
   }
 }
 @media (max-width: 800px) {
