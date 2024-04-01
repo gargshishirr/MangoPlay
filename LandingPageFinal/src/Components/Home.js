@@ -8,20 +8,22 @@ const Home = () => {
   return (
     <div className="home-container">
       <Navbar />
+      <div className="subtitle">
+      <h2> India ki traditional fantasy</h2>
+    </div>
       <div className="home-banner-container">
         <div className="home-bannerImage-container">
-          <img src={BannerBackground} alt="" />
+          <img src={BannerBackground} alt=""/>
         </div>
         <div className="home-text-section">
           <h1 className="primary-heading">
-            Your Favourrrite Food Delivered Hot & Fresh
+            lorem ipsum
           </h1>
           <p className="primary-text">
-            Healthy switcher chefs do all the prep work, like peeding, chopping
-            & marinating, so yoooou can cook a fresh food.
+            Lorem ipsum
           </p>
           <button className="secondary-button">
-            Order Now <FiArrowRight />{" "}
+            Play Now <FiArrowRight />{" "}
           </button>
         </div>
         <div className="home-image-section">

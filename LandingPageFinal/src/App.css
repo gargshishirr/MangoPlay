@@ -11,10 +11,10 @@
   transform: translate(-50%, -50%);
   /* Replace with your desired background color */
   background-color: #f0f0f0;
-  padding: 30px;
-  border-radius: 5px;
+  padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
+  z-index: 999999;
   width: 600px; /* Adjust width as needed */
   max-width: 80%; /* Responsive width for smaller screens */
 }
@@ -22,7 +22,7 @@
   display: flex; /* Allow for a close button or title */
   justify-content: space-between; /* Align items horizontally */
   align-items: center; /* Align items vertically */
-  padding-bottom: 10px; /* Spacing for content below header */
+  padding-bottom: 15px; /* Spacing for content below header */
   border-bottom: 1px solid #ddd; /* Optional divider line */
 }
 
@@ -33,12 +33,18 @@
 }
 
 .popup-close {
-  cursor: pointer; /* Indicate clickable close button */
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
 }
 
 .popup-content {
   padding: 20px; /* Adjust padding for content */
   position: relative;
+
 }
 .signUpModal-header {
   display: flex; /* Allow for a close button or title */
@@ -150,8 +156,8 @@ nav {
 }
 .home-bannerImage-container {
   position: absolute;
-  top: -100px;
-  right: -170px;
+  top: -200px;
+  right: -150px;
   z-index: -2;
   max-width: 600px;
 
