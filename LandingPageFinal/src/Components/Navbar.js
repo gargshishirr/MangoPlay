@@ -15,11 +15,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import Popup from "./Popup"; // Assuming you have a Popup component
-import SignupModal from "./SignupModal"; // Assuming you have a SignupModal component
+import Popup from "./Popup"; 
+import SignupModal from "./SignupModal";
 
-// Import Bootstrap components
 import { Form, Button } from "react-bootstrap";
+
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -68,9 +68,9 @@ const Navbar = () => {
       const data = await response.json();
       console.log(data);
 
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
 
       setFormData({
         userName: "",
@@ -80,6 +80,8 @@ const Navbar = () => {
       console.error("Error:", error.message);
     }
   };
+
+
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -117,14 +119,21 @@ const Navbar = () => {
       console.error("Error:", error.message);
     }
   };
+
+
+
   const togglePopup = () => {
-    setShowPopup(!showPopup); // Toggle popup visibility
+    setShowPopup(!showPopup);
   };
 
+
+
   const handleOpenSignup = () => {
-    setShowSignupModal(!showPopup); // Close login/signup popup
-    setShowSignupModal(!showSignupModal); // Open signup modal
+    setShowSignupModal(!showPopup); 
+    setShowSignupModal(!showSignupModal);
   };
+
+
 
   return (
     <nav>
@@ -140,10 +149,10 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Render Login/Signup Popup conditionally */}
+      
       {showPopup && (
         <Popup onClose={togglePopup}>
-          <h2>Login/Signup</h2> {/* Clearer title */}
+          <h2>Login/Signup</h2> 
           <Form onSubmit={handleLogin}>
             <Form.Group controlId="userName">
               <Form.Label>Username or Email Address</Form.Label>
@@ -176,7 +185,7 @@ const Navbar = () => {
       )}
       {showSignupModal && (
         <Popup onClose={handleOpenSignup}>
-          <h2>Login/Signup</h2> {/* Clearer title */}
+          <h2>Login/Signup</h2> 
           <Form onSubmit={handleSignup}>
             <Form.Group controlId="userName">
               <Form.Label>Username</Form.Label>
@@ -257,12 +266,6 @@ const Navbar = () => {
         </Popup>
       )}
 
-      {/* Render Signup Modal conditionally
-      {showSignupModal && (
-        <SignupModal onClose={() => setShowSignupModal(false)} />
-      )} */}
-
-      {/* Apply CSS to blur the background when a modal is open */}
       {(showPopup || showSignupModal) && <div className="overlay"></div>}
     </nav>
   );
