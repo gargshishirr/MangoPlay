@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../Assets/mangoplayer.png";
 import { BsCart2 } from "react-icons/bs";
 import { HiOutlineBars3 } from "react-icons/hi2";
@@ -24,6 +24,7 @@ import { Form, Button } from "react-bootstrap";
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [user, setUser] = useState(null);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
@@ -35,6 +36,13 @@ const Navbar = () => {
     address: "",
     password: "",
   });
+
+  useEffect(() => {
+    const userData = localStorage.getItem('userMP');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const [formDataL, setFormDataL] = useState({
     userName: "",
@@ -68,9 +76,9 @@ const Navbar = () => {
       const data = await response.json();
       console.log(data);
 
-      localStorage.setItem("user", JSON.stringify(data.data.user));
-      localStorage.setItem("accessToken", data.data.accessToken);
-      localStorage.setItem("refreshToken", data.data.refreshToken);
+      localStorage.setItem("userMP", JSON.stringify(data.data.user));
+      localStorage.setItem("accessTokenMP", data.data.accessToken);
+      localStorage.setItem("refreshTokenMP", data.data.refreshToken);
 
       setFormData({
         userName: "",
@@ -144,9 +152,15 @@ const Navbar = () => {
         <button className="demo-button" href="#">
           Demo
         </button>
-        <button className="primary-button" onClick={togglePopup}>
-          Login/SignUp
-        </button>
+        {user ? (
+          <Button className="primary-button">
+            Profile
+          </Button>
+        ) : (
+          <Button className="primary-button" onClick={togglePopup}>
+            Login/SignUp
+          </Button>
+        )}
       </div>
 
       
