@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../Assets/mangoplayer.png";
+import { useNavigate } from "react-router-dom";
 import { BsCart2 } from "react-icons/bs";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import Box from "@mui/material/Box";
@@ -36,6 +37,12 @@ const Navbar = () => {
     address: "",
     password: "",
   });
+
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
 
   useEffect(() => {
     const userData = localStorage.getItem('userMP');
@@ -153,7 +160,7 @@ const Navbar = () => {
           Demo
         </button>
         {user ? (
-          <Button className="primary-button">
+          <Button className="primary-button" onClick={handleProfileClick}>
             Profile
           </Button>
         ) : (
