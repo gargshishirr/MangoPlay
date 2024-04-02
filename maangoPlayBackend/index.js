@@ -8,6 +8,8 @@ dotenv.config({
   path: "/.env",
 });
 
+//console.log(process.env.MONGODB_URI);
+
 connectDB()
   .then(() => {
     app.on("error", (error) => {
