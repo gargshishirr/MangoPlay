@@ -87,10 +87,12 @@ const Navbar = () => {
       localStorage.setItem("accessTokenMP", data.data.accessToken);
       localStorage.setItem("refreshTokenMP", data.data.refreshToken);
 
-      setFormData({
+      setFormDataL({
         userName: "",
         password: "",
       });
+      setShowPopup(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -130,6 +132,9 @@ const Navbar = () => {
         address: "",
         password: "",
       });
+
+      setShowPopup(false); 
+      window.location.reload();
     } catch (error) {
       console.error("Error:", error.message);
     }
