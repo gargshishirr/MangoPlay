@@ -3,6 +3,8 @@ import BannerBackground from "../Assets/home-banner-background.png";
 import BannerImage from "../Assets/coming-bg.jpg";
 import Navbar from "./Navbar";
 import { FiArrowRight } from "react-icons/fi";
+import Footer from "./Footer";
+import "../App.css";
 
 
 const Home = () => {
@@ -38,6 +40,7 @@ const Home = () => {
           <img src={BannerImage} alt="" width="500" className="rounded-image" />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

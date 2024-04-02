@@ -98,6 +98,10 @@ body {
   background-color: #f6f6f6;
 }
 
+.home-container {
+  padding: 20px;
+}
+
 nav {
   display: flex;
   align-items: center;
@@ -400,6 +404,10 @@ nav {
   display: flex;
   align-items: center;
   font-weight: 600;
+}
+
+.nav-logo-container{
+  position: absolute;
 }
 
 @media (max-width: 1000px) {
