@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("userMP")));
@@ -12,11 +14,13 @@ const Profile = () => {
     localStorage.removeItem("accessTokenMP");
     localStorage.removeItem("refreshTokenMP");
     setUser(null);
-    navigate("/");;
+    navigate("/");
+    toast.success("Logout successful");
   };
 
   return (
     <div>
+      <ToastContainer />
       <Navbar />
 
       <div className="profile-container">

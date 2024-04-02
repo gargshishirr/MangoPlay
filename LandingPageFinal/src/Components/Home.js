@@ -4,6 +4,7 @@ import BannerImage from "../Assets/coming-bg.jpg";
 import Navbar from "./Navbar";
 import { FiArrowRight } from "react-icons/fi";
 
+
 const Home = () => {
   const [user, setUser] = useState(null);
 
