@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../Assets/mangoplayer.png";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { BsCart2 } from "react-icons/bs";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import Box from "@mui/material/Box";
@@ -82,6 +84,7 @@ const Navbar = () => {
 
       const data = await response.json();
       console.log(data);
+      toast.success("Login successful");
 
       localStorage.setItem("userMP", JSON.stringify(data.data.user));
       localStorage.setItem("accessTokenMP", data.data.accessToken);
@@ -91,10 +94,14 @@ const Navbar = () => {
         userName: "",
         password: "",
       });
+
       setShowPopup(false);
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (error) {
       console.error("Error:", error.message);
+      toast.error("Login failed");
     }
   };
 
@@ -121,6 +128,7 @@ const Navbar = () => {
 
       const data = await response.json();
       console.log(data);
+      toast.success("Registration successful");
 
       setFormData({
         userName: "",
@@ -133,10 +141,13 @@ const Navbar = () => {
         password: "",
       });
 
-      setShowPopup(false); 
-      window.location.reload();
+      setShowSignupModal(false); 
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (error) {
       console.error("Error:", error.message);
+      toast.error("Registration failed");
     }
   };
 
@@ -157,6 +168,8 @@ const Navbar = () => {
 
   return (
     <nav>
+      <ToastContainer />
+
       <div className="nav-logo-container">
         <img src={Logo} alt="" width="200" />
       </div>
