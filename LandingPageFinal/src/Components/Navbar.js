@@ -69,7 +69,7 @@ const Navbar = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:7000/api/v1/users/login", {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const Navbar = () => {
     event.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost:7000/api/v1/users/register",
+        "https://mangoplay.onrender.com/api/v1/users/register",
         {
           method: "POST",
           headers: {
