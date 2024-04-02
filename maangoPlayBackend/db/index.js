@@ -5,7 +5,7 @@ const connectDB = async () => {
   //console.log(process.env.MONGODB_URI);
   try {
     const connectionInstance = await mongoose.connect(
-      `mongodb+srv://mangoPlay:mangoPlay@cluster0.o3y0dz5.mongodb.net/MangoPlay`,
+      `${process.env.MONGODB_URI}`,
       {
         dbName: DB_NAME,
       }

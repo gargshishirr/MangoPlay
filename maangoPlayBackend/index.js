@@ -4,11 +4,7 @@ import connectDB from "./db/index.js";
 import { app } from "./app.js";
 import initializeSocketConnection from "./socketConnection.js";
 
-dotenv.config({
-  path: "/.env",
-});
-
-//console.log(process.env.MONGODB_URI);
+dotenv.config();
 
 connectDB()
   .then(() => {
