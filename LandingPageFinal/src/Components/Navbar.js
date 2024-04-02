@@ -167,8 +167,9 @@ const Navbar = () => {
 
 
   return (
-    <nav>
+    <>
       <ToastContainer />
+    <nav>
 
       <div className="nav-logo-container">
         <img src={Logo} alt="" width="200" />
@@ -187,6 +188,7 @@ const Navbar = () => {
           </Button>
         )}
       </div>
+      </nav>
 
       
       {showPopup && (
@@ -306,7 +308,7 @@ const Navbar = () => {
       )}
 
       {(showPopup || showSignupModal) && <div className="overlay"></div>}
-    </nav>
+    </>
   );
 };
 
