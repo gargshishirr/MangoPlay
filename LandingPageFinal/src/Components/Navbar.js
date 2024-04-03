@@ -3,24 +3,8 @@ import Logo from "../Assets/mangoplayer.png";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BsCart2 } from "react-icons/bs";
-import { HiOutlineBars3 } from "react-icons/hi2";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import InfoIcon from "@mui/icons-material/Info";
-import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
-import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import Popup from "./Popup"; 
-import SignupModal from "./SignupModal";
 
+import Popup from "./Popup"; 
 import { Form, Button } from "react-bootstrap";
 
 
@@ -163,6 +147,11 @@ const Navbar = () => {
     setShowSignupModal(!showPopup); 
     setShowSignupModal(!showSignupModal);
   };
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Assuming your token is in 'authToken'
+    sessionStorage.removeItem('refreshToken'); // If you use refresh tokens
+    window.location.href = '/'; // Redirect to home page
+  };
 
 
 
@@ -179,9 +168,13 @@ const Navbar = () => {
           Demo
         </button>
         {user ? (
+          <>
           <Button className="primary-button" onClick={handleProfileClick}>
             Profile
           </Button>
+          <Button className = "primary-button" onClick={handleLogout}>Logout
+          </Button>
+          </>
         ) : (
           <Button className="primary-button" onClick={togglePopup}>
             Login/SignUp

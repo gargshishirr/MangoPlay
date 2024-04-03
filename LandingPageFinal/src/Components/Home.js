@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import { FiArrowRight } from "react-icons/fi";
 import Footer from "./Footer";
 import "../App.css";
+import { Link } from 'react-router-dom';
 
 
 const Home = () => {
@@ -31,10 +32,10 @@ const Home = () => {
           <h1 className="primary-heading">lorem ipsum</h1>
           <p className="primary-text">Lorem ipsum</p>
           {user && (
-            <button className="secondary-button">
-              Play Now <FiArrowRight />
-            </button>
-          )}
+        <Link to="/play" className="secondary-button">
+          Play Now <FiArrowRight />
+        </Link>
+      )}
         </div>
         <div className="home-image-section">
           <img src={BannerImage} alt="" width="500" className="rounded-image" />
