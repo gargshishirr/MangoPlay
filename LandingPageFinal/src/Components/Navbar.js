@@ -1,128 +1,307 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../Assets/mangoplayer.png";
-import { BsCart2 } from "react-icons/bs";
-import { HiOutlineBars3 } from "react-icons/hi2";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import InfoIcon from "@mui/icons-material/Info";
-import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
-import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import Popup from "./Popup"; // Assuming you have a Popup component
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Import Bootstrap components
+import Popup from "./Popup"; 
 import { Form, Button } from "react-bootstrap";
+
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
-  const handleLogin = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    console.log("Login form submitted!"); // Replace with actual login logic
+  const [showPopup, setShowPopup] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    fullName: "",
+    age: "",
+    gender: "",
+    dateOfBirth: "",
+    address: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
-  const menuOptions = [
-    {
-      text: "Home",
-      icon: <HomeIcon />,
-    },
-    {
-      text: "About",
-      icon: <InfoIcon />,
-    },
-    {
-      text: "Testimonials",
-      icon: <CommentRoundedIcon />,
-    },
-    {
-      text: "Contact",
-      icon: <PhoneRoundedIcon />,
-    },
-    {
-      text: "Cart",
-      icon: <ShoppingCartRoundedIcon />,
-    },
-  ];
+
+  useEffect(() => {
+    const userData = localStorage.getItem('userMP');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const [formDataL, setFormDataL] = useState({
+    userName: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleChangeL = (e) => {
+    setFormDataL({ ...formDataL, [e.target.id]: e.target.value });
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataL),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log(data);
+      toast.success("Login successful");
+
+      localStorage.setItem("userMP", JSON.stringify(data.data.user));
+      localStorage.setItem("accessTokenMP", data.data.accessToken);
+      localStorage.setItem("refreshTokenMP", data.data.refreshToken);
+
+      setFormDataL({
+        userName: "",
+        password: "",
+      });
+
+      setShowPopup(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.error("Error:", error.message);
+      toast.error("Login failed");
+    }
+  };
+
+
+
+  const handleSignup = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        "https://mangoplay.onrender.com/api/v1/users/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log(data);
+      toast.success("Registration successful");
+
+      setFormData({
+        userName: "",
+        email: "",
+        fullName: "",
+        age: "",
+        gender: "",
+        dateOfBirth: "",
+        address: "",
+        password: "",
+      });
+
+      setShowSignupModal(false); 
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.error("Error:", error.message);
+      toast.error("Registration failed");
+    }
+  };
+
+
 
   const togglePopup = () => {
-    setShowPopup(!showPopup); // Toggle popup visibility
+    setShowPopup(!showPopup);
   };
 
+
+
+  const handleOpenSignup = () => {
+    setShowSignupModal(!showPopup); 
+    setShowSignupModal(!showSignupModal);
+  };
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Assuming your token is in 'authToken'
+    sessionStorage.removeItem('refreshToken'); // If you use refresh tokens
+    window.location.href = '/'; // Redirect to home page
+  };
+
+
+
   return (
+    <>
+      <ToastContainer />
     <nav>
+
       <div className="nav-logo-container">
         <img src={Logo} alt="" width="200" />
       </div>
       <div className="navbar-links-container">
-        <a href="">Demo</a>
-        <button className="primary-button" onClick={togglePopup}>
-          Login/SignUp
+        <button className="demo-button" href="#">
+          Demo
         </button>
+        {user ? (
+          <>
+          <Button className="primary-button" onClick={handleProfileClick}>
+            Profile
+          </Button>
+          <Button className = "primary-button" onClick={handleLogout}>Logout
+          </Button>
+          </>
+        ) : (
+          <Button className="primary-button" onClick={togglePopup}>
+            Login/SignUp
+          </Button>
+        )}
       </div>
-      <div className="navbar-menu-container">
-        <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
-      </div>
-      <Drawer
-        open={openMenu}
-        onClose={() => setOpenMenu(false)}
-        anchor="right"
-      >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={() => setOpenMenu(false)}
-          onKeyDown={() => setOpenMenu(false)}
-        >
-          <List>
-            {menuOptions.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </Box>
-      </Drawer>
+      </nav>
 
-      {/* Render the Popup component only if showPopup is true */}
+      
       {showPopup && (
         <Popup onClose={togglePopup}>
-        <h2>Login</h2> {/* Clearer title for the popup */}
-      
-        <Form onSubmit={handleLogin}> {/* Add a form for user input */}
-          <Form.Group controlId="username">
-            <Form.Label>Username or Email Address</Form.Label>
-            <Form.Control type="text" placeholder="Enter username or email" required />
-          </Form.Group>
-          <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter password" required />
-          </Form.Group>
-      
-          <Button variant="primary" type="submit">
-            Login
-          </Button>
-        </Form>
-      
-        <div className="popup-footer"> {/* Add optional footer content */}
-          <a href="#">Forgot Password?</a>
-        </div>
-      </Popup>
+          <h2>Login/Signup</h2> 
+          <Form onSubmit={handleLogin}>
+            <Form.Group controlId="userName">
+              <Form.Label>Username or Email Address</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username or email"
+                value={formDataL.userName}
+                onChange={handleChangeL}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                value={formDataL.password}
+                onChange={handleChangeL}
+                required
+              />
+            </Form.Group>
+            <Button type="submit" variant="primary">
+              Login
+            </Button>
+            <Button variant="primary" onClick={handleOpenSignup}>
+              Signup
+            </Button>
+          </Form>
+        </Popup>
+      )}
+      {showSignupModal && (
+        <Popup onClose={handleOpenSignup}>
+          <h2>Login/Signup</h2> 
+          <Form onSubmit={handleSignup}>
+            <Form.Group controlId="userName">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.userName}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="fullName">
+              <Form.Label>Full Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="age">
+              <Form.Label>Age</Form.Label>
+              <Form.Control
+                type="number"
+                value={formData.age}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="gender">
+              <Form.Label>Gender</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="dateOfBirth">
+              <Form.Label>Date of Birth</Form.Label>
+              <Form.Control
+                type="date"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="address">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.address}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Signup
+            </Button>
+          </Form>
+        </Popup>
       )}
 
-      {/* Apply CSS to blur the background when the Popup is open */}
-      {showPopup && <div className="overlay"></div>}
-    </nav>
+      {(showPopup || showSignupModal) && <div className="overlay"></div>}
+    </>
   );
 };
 
