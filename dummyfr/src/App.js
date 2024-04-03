@@ -1,10 +1,16 @@
 import "./App.css";
+import { BrowserRouter as Router, Route, Switch, Routes } from "react-router-dom";
+import Banner from "./components/Banner";
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-
+import CreateRoom from "./components/CreateRoom";
+import Navbar from "./components/Navbar";
+import RoomList from "./components/RoomList";
+import ProfilePage from "./components/ProfilePage";
 const socket = io("http://localhost:7000");
 
 function App() {
+
   const [roomId, setRoomId] = useState("");
   const [roomStatus, setRoomStatus] = useState("");
   const [userId, setUserId] = useState("");
@@ -92,6 +98,11 @@ function App() {
     console.log("Joining room:", roomId);
     socket.emit("joinRoom", roomId);
   };
+  const handleCreateRoom = () => {
+    // Handle creating a room
+    console.log("Creating a room");
+    // Implement logic to create a room
+  };
 
   const handleToss = () => {
     const choice = prompt("Enter 'head' or 'tail' for the toss:");
@@ -105,55 +116,74 @@ function App() {
 
   const handlePickPlayer = (player) => {
     socket.emit("pickPlayer", roomId, player);
+    
   };
+  const rooms = [
+    { id: 1, name: "Room 1" },
+    { id: 2, name: "Room 2" },
+    { id: 3, name: "Room 3" }
+  ];
 
   return (
-    <div>
-      <input
-        type="text"
-        value={roomId}
-        onChange={(e) => setRoomId(e.target.value)}
-      />
-      <button onClick={handleJoinRoom}>Join Room</button>
-      {roomStatus && <div>{roomStatus}</div>}
+    <Router>
+      <div className="App">
+        <Navbar />
+        <Routes>
+          {/* Home page (everything except profile) */}
+          <Route path="/" element={
+            <>
+              <Banner /> {/* Banner on root path */}
+              <div className="play-area">
+                <CreateRoom onClick={handleCreateRoom} />
+                <RoomList rooms={rooms} onJoinRoom={handleJoinRoom} />
+              </div>
+            </>
+          } />
+          {/* Profile page (only navbar and profile content) */}
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+        {/* <button onClick={handleJoinRoom}>Create Room</button> */}
+        {roomStatus && <div>{roomStatus}</div>}
+      
+      
+        <button onClick={handleToss}>Toss</button>
+        {tossResult && <div>{tossResult}</div>}
+        {errorMessage && <div>Error: {errorMessage}</div>}
 
-      <button onClick={handleToss}>Toss</button>
-      {tossResult && <div>{tossResult}</div>}
-      {errorMessage && <div>Error: {errorMessage}</div>}
-
-      <div>
-        <h3>Players List:</h3>
-        <ul>
-          {playersList.map((player, index) => (
-            <li key={index}>
-              {player}
-              <button onClick={() => handlePickPlayer(player)}>Pick</button>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <h3>Players List:</h3>
+          <ul>
+            {playersList.map((player, index) => (
+              <li key={index}>
+                {player}
+                <button onClick={() => handlePickPlayer(player)}>Pick</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {allPlayersPicked && <div>All players picked!</div>}
+        {pickedPlayersUser1.length > 0 && (
+          <div>
+            <h3>Players Picked by User 1:</h3>
+            <ul>
+              {pickedPlayersUser1.map((player, index) => (
+                <li key={index}>{player}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {pickedPlayersUser2.length > 0 && (
+          <div>
+            <h3>Players Picked by User 2:</h3>
+            <ul>
+              {pickedPlayersUser2.map((player, index) => (
+                <li key={index}>{player}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
-      {allPlayersPicked && <div>All players picked!</div>}
-      {pickedPlayersUser1.length > 0 && (
-        <div>
-          <h3>Players Picked by User 1:</h3>
-          <ul>
-            {pickedPlayersUser1.map((player, index) => (
-              <li key={index}>{player}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {pickedPlayersUser2.length > 0 && (
-        <div>
-          <h3>Players Picked by User 2:</h3>
-          <ul>
-            {pickedPlayersUser2.map((player, index) => (
-              <li key={index}>{player}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    </Router>
   );
 }
 

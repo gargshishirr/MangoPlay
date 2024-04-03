@@ -1,38 +1,524 @@
+/* App.css */
+
 .App {
   text-align: center;
+  /* background-color: #5a5e66; Dark background with a slight blue tint */
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #171a21; /* Dark background with a slight blue tint */
+  color: #f5f5f5; /* Light text for contrast */
+  padding: 10px 25px; /* Increased padding for a more spacious feel */
+  /* Optional: Add a subtle border-bottom for separation */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px; /* Adjust size as needed */
+  margin-right: 15px; /* Slightly reduced margin for tighter spacing */
+  /* Optional: Add a subtle glow effect using a filter */
+  filter: drop-shadow(0px 0px 3px rgba(255, 255, 255, 0.2));
+}
+
+.logo span {
+  font-size: 1.3rem; /* Increased font size for a bolder look */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle text shadow for depth */
+  /* Optional: Consider a custom gaming font for a more thematic look */
+}
+
+/* New styles for a more modern and gaming-inspired look */
+.nav-links {
+  display: flex;
+  /* flex-grow: 1;
+  margin-left: auto; */
+  /* align-items: right; */
+  /* justify-content: space-between; */
+}
+@media (max-width: 768px) { /* Adjust breakpoint as needed for smaller screens */
+  .navbar {
+    flex-direction: column; /* Stack elements vertically on smaller screens */
+    align-items: flex-start; /* Align logo and links to the top */
+  }
+
+  .logo {
+    margin-bottom: 15px; /* Add some spacing between logo and links on smaller screens */
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+
+.nav-links a {
+  color: #f5f5f5;
+  text-decoration: none;
+  font-weight: 500; /* Slightly bolder font weight for buttons */
+  padding: 8px 15px; /* Add some padding for better click target area */
+  border-radius: 5px; /* Rounded corners for a modern touch */
+  margin-right: 3px;
+  /* Optional: Add a hover effect with a subtle color change and border */
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  border: 1px solid transparent; /* Transparent border by default */
+  
+}
+.nav-links a:last-child {
+  margin-right: 0; /* Remove margin from the last link to avoid extra space */
+}
+
+.nav-links a:hover {
+  background-color: rgba(184, 43, 43, 0.1); /* Slight background change on hover */
+  border: 1px solid #f5f5f5; /* Add a visible border on hover */
+  cursor: pointer; /* Indicate clickable behavior on hover */
+}
+
+
+.banner {
+  background-color: #e18317; /* Blue color */
+  color: rgb(150, 68, 68);
+  padding: 30px;
+  text-align: center;
+  height: 28%; /* Set the height to 18% of the viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+  /* Adjust the banner height for smaller screens */
+  .banner {
+    height: 22%; /* Set the height to 12% of the viewport height for smaller screens */
+  }
+}
+
+.create-room-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 180px;
+  height: 50px
+}
+
+.create-room-btn:hover {
+  background-color: #0056b3; /* Darker shade of blue on hover */
+}
+
+
+.room-list {
+  margin-top: 20px;
+}
+
+.play-area {
+  display: flex; /* Arrange elements horizontally */
+  flex-direction: column; /* Stack elements vertically */
+  gap: 1rem; /* Spacing between elements */
+  margin: 2rem auto; /* Add margin for better visual separation */
+  max-width: 800px; /* Set a maximum width for responsiveness */
+  padding: 1rem; 
+  align-items: center;  
+  border: 1px solid #ddd; /* Optional border for definition */
+  border-radius: 5px; /* Optional rounded corners */
+}
+
+.create-room {
+  display: flex;
+  justify-content: space-between; /* Align elements horizontally */
+  align-items: center;
+   /* Align elements vertically */
+}
+
+.room-list h2 {
+  margin-bottom: 10px;
+}
+
+.room-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.room-list li {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-bottom: 10px;
+}
+.room-list span {
+  margin-left:10px; /* Add space between room names and buttons */
+}
+.room-list button {
+  padding: 5px 10px;
+  background-color: #06294f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 20px;
+  width:50px;
+}
+.room-list button:hover {
+  background-color: #6894c4;
+}
+
+/* ProfilePage.css */
+
+.profile-page {
+
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  position: relative;
+  /* background-color: #333; */
+  
+}
+
+.banner-image {
+  width: 100%;
+  max-height: 200px; /* Limit maximum height */
+  object-fit: cover;
+  z-index: 1; /* Ensure banner is behind profile image */
+}
+
+.user-profile-image {
+  position: absolute;
+  top: 23%; /* Overlap 10% from the top */
+  left: 12%;
+  transform: translate(-50%, -50%);
+  width: 20%; /* Responsive width */
+  max-width: 150px; /* Limit maximum width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 50%; /* Make it a circle */
+  overflow: hidden;
+  z-index: 2; /* Ensure profile image is above banner */
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.username {
+  position: absolute;
+  top: 20%; /* Adjust position as needed */
+  left: 9.7%;
+  /* transform: translateX(-50%); */
+  font-size: 1rem; /* Adjust font size as needed */
+  color: #707173;
+}
+
+.balance-container {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  width: 350px;
+  height: 135px;
+  top: 440px;
+  left: 3%;
+  /* margin-left:80px;
+  margin-top: 200px; */
+  /* justify-content: space-between; Distributes content horizontally */
+  border: 2px solid #3d3535; /* Optional border */
+  border-radius: 8px; /* Optional rounded corners */
+}
+
+.balance-data {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline; /* Aligns amount and currency vertically */
+}
+
+.balance-amount {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.balance-currency {
+  margin-left: 10px; /* Spacing between amount and currency */
+}
+.hello-text{
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+.contact-label{
+  font-size: 22px;
+  font-weight: bold;
+}
+.contact-data{
+  font-size: 20px;
+}
+.contact-info {
+ display: flex;
+ position: absolute;
+ flex-direction: column;
+ align-items: flex-start;
+ margin-top: 360px;
+ margin-left: 590px;/* Add spacing above the contact info section */
+}
+.contact-details{
+  flex-direction: column;
+  display: inline-flex;
+  margin-left: 8px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+.contact-group {
+  display: flex; /* Make icon and details a flex container (optional) */
+  align-items: flex-start; 
+  justify-content: left;
+  flex-direction: row;
+  padding-bottom: 7px;
+  margin-top: 10px;
+  /* Vertically align text with icons (optional) */
+}
+
+.contact-icon {
+  margin-right: 10px; /* Spacing between icon and text */
+}
+.profile-content {
+  display: flex; /* Make profile content a flex container */
+  justify-content: space-between; /* Align items horizontally with space between */
+  width: 80%; /* Optional: Set a width to limit content width */
+  margin: 0 auto; /* Optional: Center the content horizontally */
+}
+.update-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Make form fit container width */
+  padding: 30px;
+  margin-left: 210px;
+  height: 200px;
+  margin-top:220px;
+  width: 630px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  z-index: 1;
+  
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between; /* Space labels and inputs horizontally */
+  margin-bottom: 10px; 
+}
+
+.form-row label {
+  width: 2%; /* Adjust label width (optional) */
+  text-align: left;
+}
+
+.form-row input,
+.form-row select {
+  width: 25%; /* Adjust input and select width (optional) */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center; /* Align buttons to the right */
+  margin-top: 10px; /* Add some spacing above buttons */
+}
+.info-and-form {
+  display: flex; /* Make info and form a flex container */
+  flex-direction: column;
+  
+  /* justify-content: space-between; */
+  margin-left: 830px;
+  width: 520px; /* Stack contact info and update form vertically */
+}
+.button-row button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px; /* Spacing between buttons */
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.save-button {
+  background-color: #4CAF50; /* Green color for save button */
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.save-button:hover {
+  background-color: #45A049; /* Darker green on hover */
+}
+.cancel-button:hover {
+  background-color: #9ea09e; /* Darker green on hover */
+}
+.user-details {
+  position: absolute;
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 8px; /* Rounded corners */
+  /* padding: 20px; Add some padding */
+  margin-top: 382px; /* Add some top margin */
+  background-color: #f9f9f9;
+  width: 700px;
+  height: 280px;
+  max-width: calc(100%-120px);
+  margin-left: 1093px;
+  margin-right: 10px; /* Light gray background color */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.user-details h3 {
+  font-size: 20px; /* Larger font size for section heading */
+  margin-bottom: 15px; /* Add some bottom margin below the heading */
+}
+
+.user-details-row {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  margin-bottom: 15px;
+}
+
+.user-details-column {
+  flex: 1; /* Equal width for columns */
+  display: flex;
+}
+
+.user-details-label {
+  margin-right: 5px;
+  margin-left: 25px; /* Add some right margin */
+}
+
+.user-details-value {
+  flex: 1; /* Expand to fill remaining space */
+  background-color: #ffffff; /* White background color */
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Add some padding */
+}
+
+.user-details-value p {
+  margin: 0;
+}
+
+.user-details strong {
+  font-weight: bold;
+  margin-right: 5px;
+}
+.edit-button{
+  margin-top: 505px;
+  width: 350px;
+  height: 40px;
+  margin-left: 454px;
+  align-items: center;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+
+}
+.edit-button:hover{
+  background-color: #c9a221;
+}
+
+/* For larger screens
+@media screen and (min-width: 768px) {
+  .user-details {
+    margin-top: 402px;
+    width: 700px;
+    margin-left: 993px;
+    margin-right: 10px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .edit-button {
+    margin-top: 505px;
+    width: 350px;
+    margin-left: 354px;
   }
+} */
+
+/* For smaller screens */
+@media screen and (max-width: 767px) {
+  .user-details {
+    margin-top: 20px; /* Adjust as needed */
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .edit-button {
+    margin-top: 20px; /* Adjust as needed */
+    width: calc(100% - 20px);
+    margin-left: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .profile-page {
+    padding: 0px; /* Add padding for better spacing */
+  }
+
+  .user-profile-image {
+    top: 22%; /* Overlap 10% from the top */
+    left: 16.8%;
+    /* top: -15%; Increase overlap for smaller screens */
+  }
+  .username {
+    font-size: 1.2rem; /* Adjust font size for smaller screens */
+    /* bottom: -110px;  */
+    top: 32%;
+    left: 14.8%;
+    
+  }
+  .balance-container {
+    margin-top: 10px;
+    left: 5.2%;
+    width: 360px;
+    max-width: calc(100%-5px);
+    
+  }
+}
+
+
+.toss-section {
+  margin-top: 20px;
+}
+
+.toss-section button {
+  margin-right: 10px;
+}
+
+.player-selection {
+  margin-top: 20px;
+}
+
+.players {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.player {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.selected-players {
+  margin-top: 20px;
+}
+
+.selected-players ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.selected-players li {
+  margin-bottom: 5px;
 }
