@@ -159,4 +159,35 @@ const getUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "Current User fetched successfully"));
 });
 
-export { registerUser, loginUser, logoutUser,getUser };
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  const { fullName, gender, dateOfBirth, address, pancard } = req.body;
+
+  if (
+    [fullName, gender, dateOfBirth, address].some(
+      (field) => field?.trim() === ""
+    )
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: req.user?._id },
+    {
+      $set: {
+        fullName,
+        gender,
+        dateOfBirth,
+        address,
+        pancard,
+      },
+    },
+    { new: true }
+  ).select("-password -refreshToken");
+  console.log(updatedUser);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Account details updates"));
+});
+
+export { registerUser, loginUser, logoutUser,getUser,updateAccountDetails };

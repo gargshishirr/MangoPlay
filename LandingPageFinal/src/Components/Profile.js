@@ -15,15 +15,10 @@ import UpdateForm from './UpdateForm';
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);  // State for edit mode
   const [showUserDetails, setShowUserDetails] = useState(true);
-  // Assuming you have user data
-  const userData = {
-    name: 'John',
-    surname: 'Doe',
-    city: 'New York',
-    gender: 'Male',
-    birthdate: '1990-01-01',
-    panCard: 'ABCD12345',
-  };
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("userMP")));
+  const navigate = useNavigate();
+
+  
   
   const handleEditClick = () => {
     setIsEditing(!isEditing);  // Toggle edit mode
@@ -44,9 +39,9 @@ function Profile() {
     <div className="profile-page">
       <img src={myprof} alt="Banner Image" className="banner-image" />
       <UserAvatar />
-      <span className="username">@rishi22</span>
+      <span className="username">{`@${user.userName}`}</span>
       <div className="contact-info">
-        <div className='hello-text'>Hello Rishi!</div>
+        <div className='hello-text'>{`Hello ${user.userName}!`}</div>
         <div className="contact-item">
           <div className="contact-group">  
             <img src={phone} alt="Phone Icon" className="contact-icon" />
@@ -61,7 +56,7 @@ function Profile() {
             <img src={mail} alt="Mail Icon" className="contact-icon" />
             <div className="contact-details">
               <span className="contact-label">Email id</span>
-              <span className="contact-data">example@example.com</span>  
+              <span className="contact-data">{user.email}</span>  
             </div>
           </div>
         </div>
@@ -82,7 +77,7 @@ function Profile() {
               <strong>Name:</strong>
             </div>
             <div className="user-details-value">
-              <p>John</p>
+              <p>{user.fullName}</p>
             </div>
           </div>
           <div className="user-details-column">
@@ -90,17 +85,17 @@ function Profile() {
               <strong>Surname:</strong>
             </div>
             <div className="user-details-value">
-              <p>Doe</p>
+              <p>{user.surName}</p>
             </div>
           </div>
         </div>
         <div className="user-details-row">
           <div className="user-details-column">
             <div className="user-details-label">
-              <strong>City:</strong>
+              <strong>Address:</strong>
             </div>
             <div className="user-details-value">
-              <p>New York</p>
+              <p>{user.address}</p>
             </div>
           </div>
           <div className="user-details-column">
@@ -108,7 +103,7 @@ function Profile() {
               <strong>Gender:</strong>
             </div>
             <div className="user-details-value">
-              <p>Male</p>
+              <p>{user.gender}</p>
             </div>
           </div>
         </div>
@@ -118,7 +113,7 @@ function Profile() {
               <strong>Date of Birth:</strong>
             </div>
             <div className="user-details-value">
-              <p>1990-01-01</p>
+              <p>{user.dob}</p>
             </div>
           </div>
           <div className="user-details-column">
@@ -126,7 +121,7 @@ function Profile() {
               <strong>PAN Card:</strong>
             </div>
             <div className="user-details-value">
-              <p>ABCDE12345</p>
+              <p>{user.pancard}</p>
             </div>
           </div>
         </div>
@@ -136,7 +131,7 @@ function Profile() {
       )}
       <div className="info-and-form">
         {isEditing ? (
-          <UpdateForm userData={userData} onCancel={handleCancel} onSave={handleSave} />
+          <UpdateForm userData={user} onCancel={handleCancel} onSave={handleSave} />
         ) : (
           <button className="edit-button" onClick={handleEditClick}>
            <h2> Edit Profile</h2>
