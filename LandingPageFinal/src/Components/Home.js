@@ -29,8 +29,8 @@ const Home = () => {
           <img src={BannerBackground} alt="" />
         </div>
         <div className="home-text-section">
-          <h1 className="primary-heading">lorem ipsum</h1>
-          <p className="primary-text">Lorem ipsum</p>
+          <h1 className="primary-heading">PLAYER MANGO,PAISE JEETO!</h1>
+          <p className="primary-text">Paise Jeetne Ab Bohot Aasaan</p>
           {user && (
         <Link to="/play" className="secondary-button">
           Play Now <FiArrowRight />
