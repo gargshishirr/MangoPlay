@@ -56,6 +56,10 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    pancard: {
+      type: String,
+      unique: true,
+    },
   },
   { timestamps: true }
 );
