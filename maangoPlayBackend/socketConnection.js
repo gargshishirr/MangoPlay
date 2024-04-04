@@ -15,29 +15,61 @@ const initializeSocketConnection = (app) => {
   io.on("connection", (socket) => {
     console.log("New user connected");
 
-    // Room creation and joining
-  socket.on("joinRoom", async (roomId) => {
-    try {
-      const existingRoom = await Room.findById(roomId);
-      if (!existingRoom) {
-        const room = new Room({ _id: roomId, user1: socket.id });
+    //Room joining
+    socket.on("createRoom", async (userData) => {
+      try {
+        const { userId, userName } = userData;
+        const room = new Room({
+          user1: { userId: userId, name: userName },
+          status: "open",
+        });
+
         await room.save();
+        const roomId = room._id;
+
         socket.join(roomId);
-        console.log(`Room created and user1 joined: ${roomId}`);
-        io.to(socket.id).emit("roomJoined", { roomId, user: "user1" });
-      } else if (!existingRoom.user2) {
-        existingRoom.user2 = socket.id;
-        await existingRoom.save();
-        socket.join(roomId);
-        console.log(`User2 joined room: ${roomId}`);
-        io.to(socket.id).emit("roomJoined", { roomId, user: "user2" });
-      } else {
-        io.to(socket.id).emit("roomFull", roomId);
+        console.log(`Room created and ${userName} joined: ${roomId}`);
+        io.to(socket.id).emit("roomJoined1", { roomId, userName });
+
+      } catch (err) {
+        console.error("Error joining room:", err);
       }
-    } catch (err) {
-      console.error("Error joining room:", err);
-    }
-  });
+    });
+
+    
+
+    //Join Room
+    socket.on("joinRoom", async (data) => {
+      try {
+        const { userId, userName, roomId } = data;
+
+        // Check if the room exists
+        const existingRoom = await Room.findById(roomId);
+        if (!existingRoom) {
+          io.to(socket.id).emit("roomNotFound", roomId);
+          return;
+        }
+
+        // Check if the room status is open
+        if (existingRoom.status !== "open") {
+          io.to(socket.id).emit("roomNotOpen", roomId);
+          return;
+        }
+
+        // Update the room 
+        existingRoom.user2 = { userId: userId, name: userName };
+        existingRoom.status = "full";
+        await existingRoom.save();
+
+        socket.join(roomId);
+        console.log(`${userName} joined room: ${roomId}`);
+        io.to(socket.id).emit("roomJoined2", { roomId, userName });
+      } catch (err) {
+        console.error("Error joining room as user2:", err);
+      }
+    });
+
+
 
   // Toss functionality
   socket.on("conductToss", async (roomId, tossChoice) => {

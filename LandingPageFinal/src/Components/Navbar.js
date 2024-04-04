@@ -68,6 +68,7 @@ const Navbar = () => {
 
       const data = await response.json();
       console.log(data);
+      
       toast.success("Login successful");
 
       localStorage.setItem("userMP", JSON.stringify(data.data.user));
