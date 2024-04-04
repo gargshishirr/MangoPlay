@@ -6,8 +6,11 @@ import CreateRoom from "./CreateRoom";
 import Navbar from "./Navbar";
 import RoomList from "./RoomList";
 import ProfilePage from "./Profile";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const socket = io("http://localhost:7000");
+
+const socket = io("https://mangoplay.onrender.com");
 
 const Play = () => {
   const [rooms, setRooms] = useState([]);
@@ -108,7 +111,7 @@ const Play = () => {
       userName: user.userName,
     };
     socket.emit("createRoom", userData);
-    //console.log("end");
+    toast.success("Room Created");
   };
 
   const handleJoinRoom = (roomId) => {
@@ -120,6 +123,7 @@ const Play = () => {
     };
     console.log(data);
     socket.emit("joinRoom", data);
+    toast.success("Room Joined");
   };
 
   const handleToss = () => {
@@ -139,7 +143,7 @@ const Play = () => {
 
   const fetchOpenRooms = async () => {
     try {
-      const response = await fetch("http://localhost:7000/api/v1/rooms/openRooms");
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/openRooms");
       if (!response.ok) {
         throw new Error("Failed to fetch open rooms");
       }
