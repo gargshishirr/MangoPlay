@@ -1,15 +1,16 @@
-import "./App.css";
+import "../App.css";
 import { BrowserRouter as Router, Route, Switch, Routes } from "react-router-dom";
-import Banner from "./components/Banner";
+import Banner from "./Banner";
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-import CreateRoom from "./components/CreateRoom";
-import Navbar from "./components/Navbar";
-import RoomList from "./components/RoomList";
-import ProfilePage from "./components/ProfilePage";
+import CreateRoom from "./CreateRoom";
+import Navbar from "./Navbar";
+import RoomList from "./RoomList";
+import ProfilePage from "./Profile";
+
 const socket = io("http://localhost:7000");
 
-function Play() {
+const Play = () => {
 
   const [roomId, setRoomId] = useState("");
   const [roomStatus, setRoomStatus] = useState("");
@@ -125,23 +126,13 @@ function Play() {
   ];
 
   return (
-    <Router>
       <div className="App">
         <Navbar />
-        <Routes>
-          {/* Home page (everything except profile) */}
-          <Route path="/" element={
-            <>
               <Banner /> {/* Banner on root path */}
               <div className="play-area">
                 <CreateRoom onClick={handleCreateRoom} />
                 <RoomList rooms={rooms} onJoinRoom={handleJoinRoom} />
               </div>
-            </>
-          } />
-          {/* Profile page (only navbar and profile content) */}
-          <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
         {/* <button onClick={handleJoinRoom}>Create Room</button> */}
         {roomStatus && <div>{roomStatus}</div>}
       
@@ -183,7 +174,6 @@ function Play() {
           </div>
         )}
       </div>
-    </Router>
   );
 }
 
