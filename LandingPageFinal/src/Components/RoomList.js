@@ -8,7 +8,7 @@ const RoomList = ({ rooms, onJoinRoom }) => {
         {rooms.map((room) => (
           <div key={room._id}>
             <span>{room.name}</span>
-            <button onClick={onJoinRoom}>Join</button>
+            <button onClick={() => onJoinRoom(room._id)}>Join</button>
           </div>
         ))}
       </ul>

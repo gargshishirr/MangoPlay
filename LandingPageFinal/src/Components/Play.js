@@ -111,9 +111,15 @@ const Play = () => {
     //console.log("end");
   };
 
-  const handleJoinRoom = () => {
-    console.log("Joining room:", roomId);
-    socket.emit("joinRoom", roomId);
+  const handleJoinRoom = (roomId) => {
+    console.log("Joining room...");
+    const data = {
+      userId: user._id,
+      userName: user.userName,
+      roomId: roomId,
+    };
+    console.log(data);
+    socket.emit("joinRoom", data);
   };
 
   const handleToss = () => {
