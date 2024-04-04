@@ -5,6 +5,7 @@ import Home from "./Components/Home";
 import Contact from "./Components/Contact";
 import Footer from "./Components/Footer";
 import Profile from "./Components/Profile";
+import Play from "./Components/Play";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/footer" element={<Footer />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/play" element={<Play />} />
       </Routes>
     </BrowserRouter>
   );
