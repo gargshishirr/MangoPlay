@@ -115,10 +115,11 @@ nav {
 .navbar-links-container {
   display: flex;
   text-decoration: none;
+  gap:10px;
   color: black;
   font-size: 1.1rem;
   font-weight: 600;
-  padding-left: 1200px;
+  /* padding-left: 1200px; */
 }
 .primary-button {
   padding: 0.9rem 1.75rem;
@@ -186,7 +187,7 @@ nav {
   align-items: flex-start;
 }
 .primary-heading {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   color: #4c4c4c;
   /* line-height: 5rem; */
   max-width: 600px;
@@ -389,7 +390,7 @@ nav {
   align-items: center;
   text-align: center;
   border-radius: 1rem;
-  color: #505050;
+  color: #5c4242;
   margin: 1rem 2rem;
 }
 .work-section-info h2 {
@@ -409,9 +410,9 @@ nav {
   font-weight: 600;
 }
 
-.nav-logo-container{
+/* .nav-logo-container{
   position: absolute;
-}
+} */
 
 @media (max-width: 1000px) {
   .navbar-links-container a {
