@@ -148,10 +148,15 @@ const Navbar = () => {
     setShowSignupModal(!showPopup); 
     setShowSignupModal(!showSignupModal);
   };
+
+  
   const handleLogout = () => {
-    localStorage.removeItem('authToken'); // Assuming your token is in 'authToken'
-    sessionStorage.removeItem('refreshToken'); // If you use refresh tokens
-    window.location.href = '/'; // Redirect to home page
+    localStorage.removeItem("userMP");
+    localStorage.removeItem("accessTokenMP");
+    localStorage.removeItem("refreshTokenMP");
+    setUser(null);
+    navigate("/");
+    toast.success("Logout successful");
   };
 
 
