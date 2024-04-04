@@ -1,10 +1,4 @@
 import "../App.css";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Routes,
-} from "react-router-dom";
 import Banner from "./Banner";
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
@@ -13,9 +7,10 @@ import Navbar from "./Navbar";
 import RoomList from "./RoomList";
 import ProfilePage from "./Profile";
 
-const socket = io("https://mangoplay.onrender.com");
+const socket = io("http://localhost:7000");
 
 const Play = () => {
+  const [rooms, setRooms] = useState([]);
   const [roomId, setRoomId] = useState("");
   const [roomStatus, setRoomStatus] = useState("");
   const [tossChoice, setTossChoice] = useState("");
@@ -28,14 +23,16 @@ const Play = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("userMP")));
 
   useEffect(() => {
+    fetchOpenRooms();
+
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server");
     });
 
-    // socket.on("roomJoined1", ({ roomId, user }) => {
-    //   console.log(`Joined room ${roomId} as ${user.userName}`);
-    //   setRoomId(roomId);
-    // });
+    socket.on("roomJoined1", ({ roomId, userName }) => {
+      console.log(`Joined room ${roomId}, ${userName}`);
+      setRoomId(roomId);
+    });
 
     // socket.on("roomJoined", ({ roomId, user }) => {
     //   console.log(`Joined room ${roomId} as ${user}`);
@@ -105,13 +102,13 @@ const Play = () => {
 
   const handleCreateRoom = () => {
     console.log("Creating room and joining as user1...");
-    console.log(user);
+    //console.log(user);
     const userData = {
       userId: user._id,
       userName: user.userName,
     };
     socket.emit("createRoom", userData);
-    console.log("end");
+    //console.log("end");
   };
 
   const handleJoinRoom = () => {
@@ -132,11 +129,20 @@ const Play = () => {
   const handlePickPlayer = (player) => {
     socket.emit("pickPlayer", roomId, player);
   };
-  const rooms = [
-    { id: 1, name: "Room 1" },
-    { id: 2, name: "Room 2" },
-    { id: 3, name: "Room 3" },
-  ];
+
+
+  const fetchOpenRooms = async () => {
+    try {
+      const response = await fetch("http://localhost:7000/api/v1/rooms/openRooms");
+      if (!response.ok) {
+        throw new Error("Failed to fetch open rooms");
+      }
+      const openRooms = await response.json();
+      setRooms(openRooms);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
 
   return (
     <div className="App">

@@ -15,8 +15,63 @@ const initializeSocketConnection = (app) => {
   io.on("connection", (socket) => {
     console.log("New user connected");
 
+    //Room joining
+    socket.on("createRoom", async (userData) => {
+      try {
+        const { userId, userName } = userData;
+        const room = new Room({
+          user1: { userId: userId, name: userName },
+          status: "open",
+        });
+
+        await room.save();
+        const roomId = room._id;
+
+        socket.join(roomId);
+        console.log(`Room created and ${userName} joined: ${roomId}`);
+        io.to(socket.id).emit("roomJoined1", { roomId, userName });
+
+      } catch (err) {
+        console.error("Error joining room:", err);
+      }
+    });
+
+    
+
+    //Join Room
+    socket.on("joinRoom", async (userData, roomId) => {
+      try {
+        const { userId, userName } = userData;
+
+        // Check if the room exists
+        const existingRoom = await Room.findById(roomId);
+        if (!existingRoom) {
+          io.to(socket.id).emit("roomNotFound", roomId);
+          return;
+        }
+
+        // Check if the room status is open
+        if (existingRoom.status !== "open") {
+          io.to(socket.id).emit("roomNotOpen", roomId);
+          return;
+        }
+
+        // Update the room 
+        existingRoom.user2 = { userId, name: userName };
+        existingRoom.status = "full";
+        await existingRoom.save();
+
+        socket.join(roomId);
+        console.log(`User2 joined room: ${roomId}`);
+        io.to(socket.id).emit("roomJoined2", { roomId, user: "user2" });
+      } catch (err) {
+        console.error("Error joining room as user2:", err);
+      }
+    });
+
+
     // Room creation and joining
-  socket.on("joinRoom", async (roomId) => {
+  socket.on("joinRoomd", async (roomId) => {
     try {
       const existingRoom = await Room.findById(roomId);
       if (!existingRoom) {
