@@ -10,7 +10,9 @@
   left: 50%;
   transform: translate(-50%, -50%);
   /* Replace with your desired background color */
-  background-color: #f0f0f0;
+  background: transparent;
+  backdrop-filter: blur(40px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
