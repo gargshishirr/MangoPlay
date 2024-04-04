@@ -44,8 +44,32 @@
 .popup-content {
   padding: 20px; /* Adjust padding for content */
   position: relative;
+  text-align: center;
 
 }
+.popup-content h2{
+  margin-bottom: 10px;
+  font-size: 30px;
+  text-align: center;
+}
+.popup-content form{
+  text-align: center;
+  padding: 10px;
+} 
+.popup-content form div{
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.popup-content form input{
+  width: 50%;
+}
+.btn-primary{
+  margin: 0 5px 0 5px;
+  padding: 2px 10px 2px 10px;
+}  
 .signUpModal-header {
   display: flex; /* Allow for a close button or title */
   justify-content: space-between; /* Align items horizontally */
