@@ -9,8 +9,9 @@ import ProfilePage from "./Profile";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const socket = io("http://localhost:7000");
 
-const socket = io("https://mangoplay.onrender.com");
+// const socket = io("https://mangoplay.onrender.com");
 
 const Play = () => {
   const [rooms, setRooms] = useState([]);
@@ -37,69 +38,37 @@ const Play = () => {
       setRoomId(roomId);
     });
 
-    // socket.on("roomJoined", ({ roomId, user }) => {
-    //   console.log(`Joined room ${roomId} as ${user}`);
-    //   setRoomStatus(`Joined room ${roomId} as ${user}`);
-    // });
+    socket.on("roomNotFound", ({ roomId }) => {
+      console.log(`Room not found ${roomId}`);
+    });
 
-    // socket.on("roomFull", (roomId) => {
-    //   console.log(`Room ${roomId} is full`);
-    //   setRoomStatus(`Room ${roomId} is full`);
-    // });
+    socket.on("roomNotOpen", ({ roomId }) => {
+      console.log(`Room not open ${roomId}`);
+    });
 
-    // socket.on("tossResult", ({ result, winner }) => {
-    //   console.log(`Toss result: ${result}, Winner: ${winner}`);
-    //   setTossResult(`Toss result: ${result}, Winner: ${winner}`);
-    //   localStorage.setItem("tossResult", JSON.stringify({ result, winner }));
+    socket.on("roomJoined2", ({ roomId, userName }) => {
+      console.log(`Joined room ${roomId}, ${userName}`);
+      setRoomId(roomId);
+    });
 
-    //   const dummyPlayers = [
-    //     "Player1",
-    //     "Player2",
-    //     "Player3",
-    //     "Player4",
-    //     "Player5",
-    //     "Player6",
-    //     "Player7",
-    //   ];
-    //   setPlayersList(dummyPlayers);
-    // });
+    socket.on("errorMessage", (message) => {
+      console.log(`Error: ${message}`);
+      setErrorMessage(message);
+    });
+  
+    socket.on("tossResult", ({ result, winner }) => {
+      console.log(`Toss result: ${result}, winner: ${winner}`);
+      setTossResult({ result, winner });
+    });
 
-    // socket.on("errorMessage", (message) => {
-    //   console.error("Error message:", message);
-    //   setErrorMessage(message);
-    // });
-
-    // socket.on("playerPicked", ({ user, player }) => {
-    //   console.log(`Player ${player} picked by ${user}`);
-    //   setPlayersList((prevPlayers) => prevPlayers.filter((p) => p !== player));
-
-    //   if (user === "user1") {
-    //     setPickedPlayersUser1((prevPlayers) => [...prevPlayers, player]);
-    //     localStorage.setItem(
-    //       "pickedPlayersUser1",
-    //       JSON.stringify([...pickedPlayersUser1, player])
-    //     );
-    //   } else {
-    //     setPickedPlayersUser2((prevPlayers) => [...prevPlayers, player]);
-    //     localStorage.setItem(
-    //       "pickedPlayersUser2",
-    //       JSON.stringify([...pickedPlayersUser2, player])
-    //     );
-    //   }
-    // });
-
-    // socket.on("allPlayersPicked", () => {
-    //   console.log("All players picked");
-    //   setAllPlayersPicked(true);
-    // });
-
+    
     return () => {
       socket.off("roomJoined1");
-      // socket.off("roomFull");
-      // socket.off("tossResult");
-      // socket.off("errorMessage");
-      // socket.off("playerPicked");
-      // socket.off("allPlayersPicked");
+      socket.off("roomNotFound");
+      socket.off("roomNotOpen");
+      socket.off("roomJoined2");
+      socket.off("errorMessage");
+      socket.off("tossResult");
     };
   }, [pickedPlayersUser1, pickedPlayersUser2]);
 
@@ -130,7 +99,14 @@ const Play = () => {
     const choice = prompt("Enter 'head' or 'tail' for the toss:");
     if (choice && (choice === "head" || choice === "tail")) {
       setTossChoice(choice);
-      socket.emit("conductToss", roomId, choice);
+      console.log("Toss initiated...");
+      const data = {
+        roomId: roomId,
+        tossChoice: choice,
+        userId: user._id,
+      };
+      console.log(data);
+      socket.emit("conductToss", data);
     } else {
       console.error("Invalid choice for toss:", choice);
     }
@@ -140,10 +116,11 @@ const Play = () => {
     socket.emit("pickPlayer", roomId, player);
   };
 
-
   const fetchOpenRooms = async () => {
     try {
-      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/openRooms");
+      const response = await fetch(
+        "https://mangoplay.onrender.com/api/v1/rooms/openRooms"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch open rooms");
       }
@@ -165,7 +142,12 @@ const Play = () => {
       {/* <button onClick={handleJoinRoom}>Create Room</button> */}
       {roomStatus && <div>{roomStatus}</div>}
       <button onClick={handleToss}>Toss</button>
-      {tossResult && <div>{tossResult}</div>}
+      {tossResult && (
+        <div>
+          <p>Toss result: {tossResult.result}</p>
+          <p>Winner: {tossResult.winner}</p>
+        </div>
+      )}
       {errorMessage && <div>Error: {errorMessage}</div>}
       <div>
         <h3>Players List:</h3>
