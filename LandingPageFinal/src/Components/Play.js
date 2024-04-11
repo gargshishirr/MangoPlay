@@ -9,9 +9,9 @@ import ProfilePage from "./Profile";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const socket = io("http://localhost:7000");
+// const socket = io("http://localhost:7000");
 
-// const socket = io("https://mangoplay.onrender.com");
+const socket = io("https://mangoplay.onrender.com");
 
 const Play = () => {
   const [rooms, setRooms] = useState([]);
@@ -20,7 +20,15 @@ const Play = () => {
   const [tossChoice, setTossChoice] = useState("");
   const [tossResult, setTossResult] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [playersList, setPlayersList] = useState([]);
+  const [playersList, setPlayersList] = useState([
+    "Player1",
+    "Player2",
+    "Player3",
+    "Player4",
+    "Player5",
+    "Player6",
+    "Player7",
+  ]);
   const [pickedPlayersUser1, setPickedPlayersUser1] = useState([]);
   const [pickedPlayersUser2, setPickedPlayersUser2] = useState([]);
   const [allPlayersPicked, setAllPlayersPicked] = useState(false);
@@ -55,13 +63,26 @@ const Play = () => {
       console.log(`Error: ${message}`);
       setErrorMessage(message);
     });
-  
+
     socket.on("tossResult", ({ result, winner }) => {
       console.log(`Toss result: ${result}, winner: ${winner}`);
       setTossResult({ result, winner });
     });
 
-    
+    socket.on("playerPicked", ({ user, player }) => {
+      console.log(`${user} picked player: ${player}`);
+      if (user === "user1") {
+        setPickedPlayersUser1((prevPlayers) => [...prevPlayers, player]);
+      } else {
+        setPickedPlayersUser2((prevPlayers) => [...prevPlayers, player]);
+      }
+    });
+  
+    socket.on("allPlayersPicked", () => {
+      console.log("All players picked");
+      setAllPlayersPicked(true);
+    });
+
     return () => {
       socket.off("roomJoined1");
       socket.off("roomNotFound");
@@ -69,6 +90,8 @@ const Play = () => {
       socket.off("roomJoined2");
       socket.off("errorMessage");
       socket.off("tossResult");
+      socket.off("playerPicked");
+      socket.off("allPlayersPicked");
     };
   }, [pickedPlayersUser1, pickedPlayersUser2]);
 
@@ -112,10 +135,6 @@ const Play = () => {
     }
   };
 
-  const handlePickPlayer = (player) => {
-    socket.emit("pickPlayer", roomId, player);
-  };
-
   const fetchOpenRooms = async () => {
     try {
       const response = await fetch(
@@ -129,6 +148,16 @@ const Play = () => {
     } catch (error) {
       console.error("Error:", error.message);
     }
+  };
+
+  const handlePickPlayer = (player) => {
+    const data = {
+      roomId: roomId,
+      player: player,
+      userId: user._id,
+    };
+    //console.log(data);
+    socket.emit("pickPlayer", data);
   };
 
   return (

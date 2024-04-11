@@ -85,6 +85,7 @@ const initializeSocketConnection = (app) => {
 
         // Validate that the user attempting to conduct the toss is user1
         if (userId.toString() !== room.user1.userId.toString()) {
+          // Adjusted this condition
           io.to(socket.id).emit(
             "errorMessage",
             "Only user1 can conduct the toss"
@@ -104,17 +105,16 @@ const initializeSocketConnection = (app) => {
 
         // Broadcast toss result to all users in the room
         io.to(roomId).emit("tossResult", { result: tossResult, winner });
-
       } catch (err) {
         console.error("Error conducting toss:", err);
         io.to(socket.id).emit("errorMessage", "Error conducting toss");
       }
     });
 
-
     // Pick player functionality
-    socket.on("pickPlayer", async (roomId, player) => {
+    socket.on("pickPlayer", async (data) => {
       try {
+        const { roomId, player, userId } = data;
         const dummyPlayers = [
           "Player1",
           "Player2",
@@ -128,18 +128,15 @@ const initializeSocketConnection = (app) => {
         const room = await Room.findById(roomId);
         if (!room) {
           io.to(socket.id).emit("errorMessage", "Room not found");
+          console.log("Room not found");
           return;
         }
 
-        const userId = room.user1 === socket.id ? "user1" : "user2";
-
-        // Ensure the pickedPlayersUser1 and pickedPlayersUser2 arrays exist
-        if (!room.pickedPlayersUser1) {
-          room.pickedPlayersUser1 = [];
-        }
-        if (!room.pickedPlayersUser2) {
-          room.pickedPlayersUser2 = [];
-        }
+        if (userId.toString() !== room.user1.userId.toString() && userId.toString() !== room.user2.userId.toString()) {
+          io.to(socket.id).emit("errorMessage", "Invalid user");
+          console.log("Invalid user");
+          return;
+        }    
 
         // Check if the player is already picked
         const isPlayerPicked =
@@ -153,7 +150,7 @@ const initializeSocketConnection = (app) => {
         }
 
         // Update picked player list for the user
-        if (userId === "user1") {
+        if (userId.toString() !== room.user1.userId.toString()) {
           room.pickedPlayersUser1.push(player);
         } else {
           room.pickedPlayersUser2.push(player);
