@@ -30,13 +30,10 @@ const initializeSocketConnection = (app) => {
         socket.join(roomId);
         console.log(`Room created and ${userName} joined: ${roomId}`);
         io.to(socket.id).emit("roomJoined1", { roomId, userName });
-
       } catch (err) {
         console.error("Error joining room:", err);
       }
     });
-
-    
 
     //Join Room
     socket.on("joinRoom", async (data) => {
@@ -56,7 +53,7 @@ const initializeSocketConnection = (app) => {
           return;
         }
 
-        // Update the room 
+        // Update the room
         existingRoom.user2 = { userId: userId, name: userName };
         existingRoom.status = "full";
         await existingRoom.save();
@@ -69,87 +66,111 @@ const initializeSocketConnection = (app) => {
       }
     });
 
-
-
-  // Toss functionality
-  socket.on("conductToss", async (roomId, tossChoice) => {
-    try {
-      const room = await Room.findById(roomId);
-      if (!room) {
-        io.to(socket.id).emit("errorMessage", "Room not found");
-        return;
-      }
-
-      const tossResult = Math.random() < 0.5 ? "head" : "tail";
-      const winner = tossResult === tossChoice ? "user1" : "user2";
-
-      room.tossResult = winner;
-      await room.save();
-
-      io.to(roomId).emit("tossResult", { result: tossResult, winner });
-    } catch (err) {
-      console.error("Error conducting toss:", err);
-      io.to(socket.id).emit("errorMessage", "Error conducting toss");
-    }
-  });
-
-      
-    // Pick player functionality
-  socket.on("pickPlayer", async (roomId, player) => {
+    // Toss functionality
+    socket.on("conductToss", async (data) => {
       try {
-        
-          const dummyPlayers = ["Player1", "Player2", "Player3", "Player4", "Player5", "Player6", "Player7"]; 
-          
+        const { roomId, tossChoice, userId } = data;
+        const room = await Room.findById(roomId);
+        if (!room) {
+          io.to(socket.id).emit("errorMessage", "Room not found");
+          console.log("Room not found");
+          return;
+        }
 
-      const room = await Room.findById(roomId);
-      if (!room) {
-        io.to(socket.id).emit("errorMessage", "Room not found");
-        return;
+        if (room.status !== "full") {
+          io.to(socket.id).emit("errorMessage", "Room is not full");
+          console.log("Room is not full yet");
+          return;
+        }
+
+        // Validate that the user attempting to conduct the toss is user1
+        if (userId.toString() !== room.user1.userId.toString()) {
+          // Adjusted this condition
+          io.to(socket.id).emit(
+            "errorMessage",
+            "Only user1 can conduct the toss"
+          );
+          console.log("Only user1 can conduct the toss");
+          return;
+        }
+
+        const tossResult = Math.random() < 0.5 ? "head" : "tail";
+        const winner = tossResult === tossChoice ? "user1" : "user2";
+
+        // Update toss result in the room
+        room.tossResult = winner;
+        await room.save();
+
+        console.log(`Toss conducted in room ${roomId}: ${winner} wins`);
+
+        // Broadcast toss result to all users in the room
+        io.to(roomId).emit("tossResult", { result: tossResult, winner });
+      } catch (err) {
+        console.error("Error conducting toss:", err);
+        io.to(socket.id).emit("errorMessage", "Error conducting toss");
       }
+    });
 
-      const userId = room.user1 === socket.id ? "user1" : "user2";
+    // Pick player functionality
+    socket.on("pickPlayer", async (data) => {
+      try {
+        const { roomId, player, userId } = data;
+        const dummyPlayers = [
+          "Player1",
+          "Player2",
+          "Player3",
+          "Player4",
+          "Player5",
+          "Player6",
+          "Player7",
+        ];
 
-      // Ensure the pickedPlayersUser1 and pickedPlayersUser2 arrays exist
-      if (!room.pickedPlayersUser1) {
-        room.pickedPlayersUser1 = [];
+        const room = await Room.findById(roomId);
+        if (!room) {
+          io.to(socket.id).emit("errorMessage", "Room not found");
+          console.log("Room not found");
+          return;
+        }
+
+        if (userId.toString() !== room.user1.userId.toString() && userId.toString() !== room.user2.userId.toString()) {
+          io.to(socket.id).emit("errorMessage", "Invalid user");
+          console.log("Invalid user");
+          return;
+        }    
+
+        // Check if the player is already picked
+        const isPlayerPicked =
+          userId === "user1"
+            ? room.pickedPlayersUser1.includes(player)
+            : room.pickedPlayersUser2.includes(player);
+
+        if (isPlayerPicked) {
+          io.to(socket.id).emit("errorMessage", "Player already picked");
+          return;
+        }
+
+        // Update picked player list for the user
+        if (userId.toString() !== room.user1.userId.toString()) {
+          room.pickedPlayersUser1.push(player);
+        } else {
+          room.pickedPlayersUser2.push(player);
+        }
+        await room.save();
+
+        io.to(roomId).emit("playerPicked", { user: userId, player });
+
+        // Check if all players are picked
+        if (
+          room.pickedPlayersUser1.length + room.pickedPlayersUser2.length ===
+          dummyPlayers.length
+        ) {
+          io.to(roomId).emit("allPlayersPicked");
+        }
+      } catch (err) {
+        console.error("Error picking player:", err);
+        io.to(socket.id).emit("errorMessage", "Error picking player");
       }
-      if (!room.pickedPlayersUser2) {
-        room.pickedPlayersUser2 = [];
-      }
-
-      // Check if the player is already picked
-      const isPlayerPicked =
-        userId === "user1"
-          ? room.pickedPlayersUser1.includes(player)
-          : room.pickedPlayersUser2.includes(player);
-
-      if (isPlayerPicked) {
-        io.to(socket.id).emit("errorMessage", "Player already picked");
-        return;
-      }
-
-      // Update picked player list for the user
-      if (userId === "user1") {
-        room.pickedPlayersUser1.push(player);
-      } else {
-        room.pickedPlayersUser2.push(player);
-      }
-      await room.save();
-
-      io.to(roomId).emit("playerPicked", { user: userId, player });
-
-      // Check if all players are picked
-      if (
-        room.pickedPlayersUser1.length + room.pickedPlayersUser2.length ===
-        dummyPlayers.length
-      ) {
-        io.to(roomId).emit("allPlayersPicked");
-      }
-    } catch (err) {
-      console.error("Error picking player:", err);
-      io.to(socket.id).emit("errorMessage", "Error picking player");
-    }
-  });
+    });
 
     // Handle disconnect
     socket.on("disconnect", () => {
