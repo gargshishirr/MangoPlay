@@ -9,9 +9,9 @@ import ProfilePage from "./Profile";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const socket = io("http://localhost:7000");
+//const socket = io("http://localhost:7000");
 
-// const socket = io("https://mangoplay.onrender.com");
+const socket = io("https://mangoplay.onrender.com");
 
 const Play = () => {
   const [rooms, setRooms] = useState([]);
@@ -64,23 +64,12 @@ const Play = () => {
       setErrorMessage(message);
     });
   
-    socket.on("tossResult", ({ result, winner }) => {
-      console.log(`Toss result: ${result}, winner: ${winner}`);
-      setTossResult({ result, winner });
-
-      if (winner === 'user1' || winner === 'user2') {
-        setTossResult({ result, winner });
-      }
-
-    });
-  
     return () => {
       socket.off("roomJoined1");
       socket.off("roomNotFound");
       socket.off("roomNotOpen");
       socket.off("roomJoined2");
       socket.off("errorMessage");
-      socket.off("tossResult");
     };
   }, [pickedPlayersUser1, pickedPlayersUser2, roomStatus, tossResult, errorMessage]);  
 
@@ -113,7 +102,7 @@ const Play = () => {
     if (choice && (choice === "head" || choice === "tail")) {
       console.log("Toss initiated...");
     try {
-      const response = await fetch("http://localhost:7000/api/v1/rooms/toss", {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/toss", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,6 +128,7 @@ const Play = () => {
     }
   };
 
+
   const fetchOpenRooms = async () => {
     try {
       const response = await fetch(
@@ -157,7 +147,7 @@ const Play = () => {
 
   const handleShowTossResult = async () => {
     try {
-      const response = await fetch("http://localhost:7000/api/v1/rooms/tossResult", {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/tossResult", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
