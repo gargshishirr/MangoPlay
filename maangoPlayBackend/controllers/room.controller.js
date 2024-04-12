@@ -16,6 +16,7 @@ const getOpenRooms = async (req, res) => {
   }
 };
 
+
 const handleToss = async (req, res) => {
   const { roomId, tossChoice, userId } = req.body;
   
@@ -48,4 +49,24 @@ const handleToss = async (req, res) => {
 }
 
 
-export { getOpenRooms, handleToss };
+const getTossResult = async (req, res) => {
+  const { roomId } = req.body;
+
+  try {
+    // Find the room by ID
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+    //console.log("Toss result:", room.tossResult);
+    // Return the toss result
+    res.status(200).json({ result: room.tossResult });
+  } catch (error) {
+    console.error("Error fetching toss result:", error);
+    res.status(500).json({ message: "Error fetching toss result" });
+  }
+}
+
+
+
+export { getOpenRooms, handleToss, getTossResult };

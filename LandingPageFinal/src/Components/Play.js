@@ -154,6 +154,31 @@ const Play = () => {
     }
   };
 
+
+  const handleShowTossResult = async () => {
+    try {
+      const response = await fetch("http://localhost:7000/api/v1/rooms/tossResult", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch toss result");
+      }
+      const data = await response.json();
+      console.log("Toss result:", data);
+      setTossResult(data);
+    } catch (error) {
+      console.error("Error fetching toss result:", error.message);
+      // Handle error
+    }
+  };
+
+
   const handlePickPlayer = (player) => {
     const data = {
       roomId: roomId,
@@ -175,10 +200,10 @@ const Play = () => {
       {/* <button onClick={handleJoinRoom}>Create Room</button> */}
       {roomStatus && <div>{roomStatus}</div>}
       <button onClick={handleToss}>Toss</button>
+      <button onClick={handleShowTossResult}>Show Toss Result</button>
       {tossResult && (
         <div>
           <p>Toss result: {tossResult.result}</p>
-          <p>Winner: {tossResult.winner}</p>
         </div>
       )}
       {errorMessage && <div>Error: {errorMessage}</div>}
