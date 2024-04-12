@@ -9,7 +9,7 @@ import ProfilePage from "./Profile";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// const socket = io("http://localhost:7000");
+//const socket = io("http://localhost:7000");
 
 const socket = io("https://mangoplay.onrender.com");
 
@@ -36,64 +36,43 @@ const Play = () => {
 
   useEffect(() => {
     fetchOpenRooms();
-
+  
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server");
     });
-
+  
     socket.on("roomJoined1", ({ roomId, userName }) => {
       console.log(`Joined room ${roomId}, ${userName}`);
       setRoomId(roomId);
     });
-
+  
     socket.on("roomNotFound", ({ roomId }) => {
       console.log(`Room not found ${roomId}`);
     });
-
+  
     socket.on("roomNotOpen", ({ roomId }) => {
       console.log(`Room not open ${roomId}`);
     });
-
+  
     socket.on("roomJoined2", ({ roomId, userName }) => {
       console.log(`Joined room ${roomId}, ${userName}`);
       setRoomId(roomId);
     });
-
+  
     socket.on("errorMessage", (message) => {
       console.log(`Error: ${message}`);
       setErrorMessage(message);
     });
-
-    socket.on("tossResult", ({ result, winner }) => {
-      console.log(`Toss result: ${result}, winner: ${winner}`);
-      setTossResult({ result, winner });
-    });
-
-    socket.on("playerPicked", ({ user, player }) => {
-      console.log(`${user} picked player: ${player}`);
-      if (user === "user1") {
-        setPickedPlayersUser1((prevPlayers) => [...prevPlayers, player]);
-      } else {
-        setPickedPlayersUser2((prevPlayers) => [...prevPlayers, player]);
-      }
-    });
   
-    socket.on("allPlayersPicked", () => {
-      console.log("All players picked");
-      setAllPlayersPicked(true);
-    });
-
     return () => {
       socket.off("roomJoined1");
       socket.off("roomNotFound");
       socket.off("roomNotOpen");
       socket.off("roomJoined2");
       socket.off("errorMessage");
-      socket.off("tossResult");
-      socket.off("playerPicked");
-      socket.off("allPlayersPicked");
     };
-  }, [pickedPlayersUser1, pickedPlayersUser2]);
+  }, [pickedPlayersUser1, pickedPlayersUser2, roomStatus, tossResult, errorMessage]);  
+
 
   const handleCreateRoom = () => {
     console.log("Creating room and joining as user1...");
@@ -118,22 +97,37 @@ const Play = () => {
     toast.success("Room Joined");
   };
 
-  const handleToss = () => {
+  const handleToss = async () => {
     const choice = prompt("Enter 'head' or 'tail' for the toss:");
     if (choice && (choice === "head" || choice === "tail")) {
-      setTossChoice(choice);
       console.log("Toss initiated...");
-      const data = {
-        roomId: roomId,
-        tossChoice: choice,
-        userId: user._id,
-      };
-      console.log(data);
-      socket.emit("conductToss", data);
+    try {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/toss", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+          userId: user._id,
+          tossChoice: choice,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to conduct toss");
+      }
+      const data = await response.json();
+      console.log("Toss result:", data);
+      // Handle toss result
+    } catch (error) {
+      console.error("Error conducting toss:", error.message);
+      // Handle error
+    }
     } else {
       console.error("Invalid choice for toss:", choice);
     }
   };
+
 
   const fetchOpenRooms = async () => {
     try {
@@ -149,6 +143,31 @@ const Play = () => {
       console.error("Error:", error.message);
     }
   };
+
+
+  const handleShowTossResult = async () => {
+    try {
+      const response = await fetch("https://mangoplay.onrender.com/api/v1/rooms/tossResult", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch toss result");
+      }
+      const data = await response.json();
+      console.log("Toss result:", data);
+      setTossResult(data);
+    } catch (error) {
+      console.error("Error fetching toss result:", error.message);
+      // Handle error
+    }
+  };
+
 
   const handlePickPlayer = (player) => {
     const data = {
@@ -171,10 +190,10 @@ const Play = () => {
       {/* <button onClick={handleJoinRoom}>Create Room</button> */}
       {roomStatus && <div>{roomStatus}</div>}
       <button onClick={handleToss}>Toss</button>
+      <button onClick={handleShowTossResult}>Show Toss Result</button>
       {tossResult && (
         <div>
           <p>Toss result: {tossResult.result}</p>
-          <p>Winner: {tossResult.winner}</p>
         </div>
       )}
       {errorMessage && <div>Error: {errorMessage}</div>}
